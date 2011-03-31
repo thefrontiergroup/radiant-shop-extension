@@ -13,7 +13,14 @@ class FormLineItem
     when 'add'
       @result[:add]    = @order.add(line_item_item_id,line_item_quantity,line_item_item_type)
     when 'modify'
-      @result[:modify] = @order.modify(line_item_id,line_item_quantity)
+      if line_items.present?
+        line_items.each do |id,values|
+          @data[:line_item] = values
+          @result[:modify] = @order.modify(line_item_id,line_item_quantity)
+        end
+      else
+        @result[:modify] = @order.modify(line_item_id,line_item_quantity)
+      end
     when 'remove'
       @result[:remove] = @order.remove(line_item_id)
     end
@@ -25,6 +32,10 @@ class FormLineItem
   
   def process
     @config[:process]
+  end
+
+  def line_items
+    @data[:line_items]
   end
   
   def line_item
