@@ -66,7 +66,7 @@ module Shop
         end
       end
       
-      [:price].each do |symbol|
+      [:cost, :price, :tax].each do |symbol|
         desc %{ outputs the #{symbol} of the current cart item }
         tag "shop:cart:item:#{symbol}" do |tag|
           attr = tag.attr.symbolize_keys
