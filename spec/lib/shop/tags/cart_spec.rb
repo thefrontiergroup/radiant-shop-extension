@@ -22,7 +22,8 @@ describe Shop::Tags::Cart do
       'shop:cart:quantity',
       'shop:cart:weight',
       'shop:cart:notes',
-      'shop:cart:price'].sort
+      'shop:cart:price',
+      'shop:cart:cost'].sort
   end
   
   context 'cart tags' do

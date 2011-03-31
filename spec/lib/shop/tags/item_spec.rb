@@ -19,6 +19,8 @@ describe Shop::Tags::Item do
       'shop:cart:item:quantity',
       'shop:cart:item:name',
       'shop:cart:item:price',
+      'shop:cart:item:cost',
+      'shop:cart:item:tax',
       'shop:cart:item:sku',
       'shop:cart:item:link'].sort
   end

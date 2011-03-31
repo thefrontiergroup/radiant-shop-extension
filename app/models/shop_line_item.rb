@@ -12,10 +12,33 @@ class ShopLineItem < ActiveRecord::Base
   
   validates_numericality_of :item_price, :greater_than => 0.00,    :allow_nil => true,     :precisions => 2
   
+  def cost
+    (item_price * quantity)
+  end
+
   def price
-    (item_price.to_f * self.quantity).to_f
+    result = cost
+    
+    result += tax if Radiant::Config['shop.tax_strategy'] === 'exclusive'
+
+    result
   end
   
+  def tax
+    percentage = Radiant::Config['shop.tax_percentage'].to_f * 0.01
+    
+    case Radiant::Config['shop.tax_strategy']
+    when 'inclusive'
+      tax = cost - (cost / (1 + percentage))
+    when 'exclusive'
+      tax = cost * percentage
+    else
+      tax = 0
+    end
+    
+    BigDecimal.new(tax.to_s)
+  end
+
   def weight
     warn 'Not yet fully implemented'
     (item.weight.to_f * self.quantity.to_f).to_f

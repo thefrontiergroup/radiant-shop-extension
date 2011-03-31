@@ -60,7 +60,14 @@ module Shop
         end
       end
       
-      # Display the total price of the items in the shopping basket.
+      desc %{ Output the base cost of the items in the shopping basket. }
+      tag 'shop:cart:cost' do |tag|
+        attr = tag.attr.symbolize_keys
+        order = tag.locals.shop_order
+        
+        Helpers.currency(order.cost,attr)
+      end
+      
       desc %{ Output the total price of the items in the shopping basket. }
       tag 'shop:cart:price' do |tag|
         attr = tag.attr.symbolize_keys

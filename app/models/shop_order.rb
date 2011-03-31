@@ -15,33 +15,22 @@ class ShopOrder < ActiveRecord::Base
   accepts_nested_attributes_for :line_items,  :reject_if => :all_blank
   accepts_nested_attributes_for :billing,     :reject_if => :all_blank
   accepts_nested_attributes_for :shipping,    :reject_if => :all_blank
-  
-  def price
-    price = 0; line_items.map { |l| price += l.price }
-    
-    price += tax if Radiant::Config['shop.tax_strategy'] === 'exclusive'
-    
-    price
+ 
+  def cost
+    line_items.inject(BigDecimal.new('0.00')) { |cost,line_item| cost + line_item.cost }
   end
-  
+
+  def price
+    line_items.inject(BigDecimal.new('0.00')) { |price,line_item| price + line_item.price }
+  end  
+
+  def tax
+    line_items.inject(BigDecimal.new('0.00')) { |tax,line_item| tax + line_item.tax }
+  end
+
   def weight
     weight = 0; line_items.map { |l| weight += l.weight }
     weight
-  end
-  
-  def tax
-    price      = 0; line_items.map { |l| price += l.price; }
-    tax        = 0
-    percentage = Radiant::Config['shop.tax_percentage'].to_f * 0.01
-    
-    case Radiant::Config['shop.tax_strategy']
-    when 'inclusive'
-      tax = price - (price / (1 + percentage))
-    when 'exclusive'
-      tax = price * percentage
-    end
-    
-    BigDecimal.new(tax.to_s)
   end
   
   def add!(id, quantity = nil, type = nil)
