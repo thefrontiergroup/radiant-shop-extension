@@ -24,6 +24,16 @@ module Shop
             
             if current_user
               @order.update_attribute(:customer_id, (current_user.id))
+              if current_user.billing.present? and @order.billing.blank?
+                billing = ::ShopBilling.new(current_user.billing_attributes.reject { |k,v| k == 'id' })
+                billing.save(false)
+                @order.billing = billing
+              end
+              if current_user.shipping.present? and @order.shipping.blank?
+                shipping = ::ShopBilling.new(current_user.shipping_attributes.reject { |k,v| k == 'id' })
+                shipping.save(false)
+                @order.shipping = shipping
+              end
             end
             
             @order
