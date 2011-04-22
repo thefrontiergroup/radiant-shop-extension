@@ -64,7 +64,6 @@ describe Admin::Shop::CategoriesController do
           put :sort, :format => 'js'
           
           response.should_not be_success
-          response.body.should === 'Could not sort Categories.'
         end
       end
       
@@ -73,7 +72,6 @@ describe Admin::Shop::CategoriesController do
           put :sort, :format => 'json'
           
           response.should_not be_success
-          JSON.parse(response.body)['error'].should === 'Could not sort Categories.'
         end
       end
     end
@@ -98,7 +96,6 @@ describe Admin::Shop::CategoriesController do
             put :sort, :categories => @params, :format => 'js'
             
             response.should_not be_success
-            response.body.should === 'Could not sort Categories.'
           end
         end
         
@@ -107,7 +104,6 @@ describe Admin::Shop::CategoriesController do
             put :sort, :categories => @params, :format => 'json'
             
             response.should_not be_success
-            JSON.parse(response.body)['error'].should === 'Could not sort Categories.'
           end
         end
       end
@@ -121,7 +117,6 @@ describe Admin::Shop::CategoriesController do
           it 'should assign a notice and redirect to admin_shop_products_path path' do
             put :sort, :categories => @params
             
-            flash.now[:error].should be_nil
             response.should redirect_to(admin_shop_products_path)
           end
         end
@@ -131,7 +126,6 @@ describe Admin::Shop::CategoriesController do
             put :sort, :categories => @params, :format => 'js'
             
             response.should be_success
-            response.body.should === 'Categories successfully sorted.'
           end
         end
         
@@ -140,7 +134,6 @@ describe Admin::Shop::CategoriesController do
             put :sort, :categories => @params, :format => 'json'
             
             response.should be_success
-            JSON.parse(response.body)['notice'].should === 'Categories successfully sorted.'
           end
         end
       end
@@ -154,7 +147,6 @@ describe Admin::Shop::CategoriesController do
           post :create, :shop_category => {}
           
           response.should render_template(:new)
-          flash.now[:error].should === 'Could not create Category.'
         end
       end
       
@@ -162,7 +154,6 @@ describe Admin::Shop::CategoriesController do
         it 'should return error notice and failure status' do
           post :create, :shop_category => {}, :format => 'js'
           
-          response.body.should === 'Could not create Category.'
           response.should_not be_success
         end
       end
@@ -171,7 +162,6 @@ describe Admin::Shop::CategoriesController do
         it 'should return an error json object and failure status' do
           post :create, :shop_category => {}, :format => 'json'
           
-          JSON.parse(response.body)['error'].should === 'Could not create Category.'
           response.should_not be_success
         end
       end
@@ -234,7 +224,6 @@ describe Admin::Shop::CategoriesController do
           put :update, :id => @category.id, :shop_category => { :title => 'failure' }
           
           response.should render_template(:edit)
-          flash.now[:error].should === 'Could not update Category.'
         end
       end
       
@@ -243,7 +232,6 @@ describe Admin::Shop::CategoriesController do
           put :update, :id => @category.id, :shop_category => { :title => 'failure' }, :format => 'js'
           
           response.should_not be_success
-          response.body.should === 'Could not update Category.'
         end
       end
       
@@ -252,7 +240,6 @@ describe Admin::Shop::CategoriesController do
           put :update, :id => @category.id, :shop_category => { :title => 'failure' }, :format => 'json'
           
           response.should_not be_success
-          JSON.parse(response.body)['error'].should === 'Could not update Category.'
         end
       end
     end
@@ -309,7 +296,6 @@ describe Admin::Shop::CategoriesController do
         it 'should render success message and success status' do
           delete :destroy, :id => @category.id, :format => 'js'
           
-          response.body.should === 'Category deleted successfully.'
           response.should be_success
         end
       end
@@ -318,7 +304,6 @@ describe Admin::Shop::CategoriesController do
         it 'should return a success json object and success status' do
           delete :destroy, :id => @category.id, :format => 'json'
           
-          JSON.parse(response.body)['notice'].should === 'Category deleted successfully.'
           response.should be_success
         end
       end
