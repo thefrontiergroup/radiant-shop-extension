@@ -70,7 +70,6 @@ describe Admin::Shop::ProductsController do
           put :sort, :category_id => @product.category.id, :format => 'js'
           
           response.should_not be_success
-          response.body.should === 'Could not sort Products.'
         end
       end
       
@@ -79,7 +78,6 @@ describe Admin::Shop::ProductsController do
           put :sort, :category_id => @product.category.id, :format => 'json'
           
           response.should_not be_success
-          JSON.parse(response.body)['error'].should === 'Could not sort Products.'
         end
       end
     end
@@ -93,7 +91,6 @@ describe Admin::Shop::ProductsController do
         context 'html' do
           it 'should assign an error and redirect to admin_shop_products_path path' do
             put :sort, :products => @params, :category_id => @product.category.id
-            flash.now[:error].should === 'Could not sort Products.'
             response.should redirect_to(admin_shop_products_path)
           end
         end
@@ -102,7 +99,6 @@ describe Admin::Shop::ProductsController do
           it 'should return an error string and failure status' do
             put :sort, :products => @params, :category_id => @product.category.id, :format => 'js'
             response.should_not be_success
-            response.body.should === 'Could not sort Products.'
           end
         end
         
@@ -110,7 +106,6 @@ describe Admin::Shop::ProductsController do
           it 'should return a json error object and failure status' do
             put :sort, :products => @params, :category_id => @product.category.id, :format => 'json'
             response.should_not be_success
-            JSON.parse(response.body)['error'].should === 'Could not sort Products.'
           end
         end
       end
@@ -132,7 +127,6 @@ describe Admin::Shop::ProductsController do
             put :sort, :products => @params, :category_id => @product.category.id, :format => 'js'
             
             response.should be_success
-            response.body.should === 'Products successfully sorted.'
           end
         end
         
@@ -141,7 +135,6 @@ describe Admin::Shop::ProductsController do
             put :sort, :products => @params, :category_id => @product.category.id, :format => 'json'
             
             response.should be_success
-            JSON.parse(response.body)['notice'].should === 'Products successfully sorted.'
           end
         end
       end
@@ -155,7 +148,6 @@ describe Admin::Shop::ProductsController do
           post :create, :shop_product => {}
           
           response.should render_template(:new)
-          flash.now[:error].should === 'Could not create Product.'
         end
       end
       
@@ -163,7 +155,6 @@ describe Admin::Shop::ProductsController do
         it 'should return error notice and failure status' do
           post :create, :shop_product => {}, :format => 'js'
           
-          response.body.should === 'Could not create Product.'
           response.should_not be_success
         end
       end
@@ -172,7 +163,6 @@ describe Admin::Shop::ProductsController do
         it 'should return an error json object and failure status' do
           post :create, :shop_product => {}, :format => 'json'
           
-          JSON.parse(response.body)['error'].should === 'Could not create Product.'
           response.should_not be_success
         end
       end
@@ -236,7 +226,6 @@ describe Admin::Shop::ProductsController do
           put :update, :id => @product.id, :shop_product => { :title => 'failure' }
           
           response.should render_template(:edit)
-          flash.now[:error].should === 'Could not update Product.'
         end
       end
       
@@ -244,7 +233,6 @@ describe Admin::Shop::ProductsController do
         it 'should render the error and failure status' do
           put :update, :id => @product.id, :shop_product => { :title => 'failure' }, :format => 'js'
           response.should_not be_success
-          response.body.should === 'Could not update Product.'
         end
       end
       
@@ -252,7 +240,6 @@ describe Admin::Shop::ProductsController do
         it 'should assign an error json object and failure status' do
           put :update, :id => @product.id, :shop_product => { :title => 'failure' }, :format => 'json'
           response.should_not be_success
-          JSON.parse(response.body)['error'].should === 'Could not update Product.'
         end
       end
     end
@@ -307,7 +294,6 @@ describe Admin::Shop::ProductsController do
         it 'should render success message and success status' do
           delete :destroy, :id => @product.id, :format => 'js'
           
-          response.body.should === 'Product deleted successfully.'
           response.should be_success
         end
       end
@@ -316,7 +302,6 @@ describe Admin::Shop::ProductsController do
         it 'should return a success json object and success status' do
           delete :destroy, :id => @product.id, :format => 'json'
           
-          JSON.parse(response.body)['notice'].should === 'Product deleted successfully.'
           response.should be_success
         end
       end

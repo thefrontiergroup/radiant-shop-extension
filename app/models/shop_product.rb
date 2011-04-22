@@ -19,45 +19,42 @@ class ShopProduct < ActiveRecord::Base
   accepts_nested_attributes_for :page
   
   # Returns the title of the product's page
-  def name; page.title; end
+  def name; (page.title rescue ''); end
   
   # Returns the url of the page formatted as an sku
-  def sku; ShopProduct.to_sku(slug); end
+  def sku; (ShopProduct.to_sku(slug) rescue ''); end
   
   # Returns the url of the product's page
-  def url; page.url; end
+  def url; (page.url rescue ''); end
   
   # Returns category through the pages parent
-  def category; page.parent.shop_category; end
+  def category; (page.parent.shop_category rescue nil); end
   
   # Returns id of category
-  def category_id; category.id; end
+  def category_id; (category.id rescue ''); end
   
   # Returns the content of the product's page's description part
   def description
-    page.render_part('description')
+    page.render_part('description') rescue ''
   end
   
-  # Returns the url of the page
-  def url; page.url; end
-  
   # Returns the customers of this product
-  def customers; line_items.map(&:customer).flatten.compact.uniq; end
+  def customers; (line_items.map(&:customer).flatten.compact.uniq rescue []); end
   
   # Returns an array of customer ids
-  def customer_ids; customers.map(&:id); end
+  def customer_ids; (customers.map(&:id) rescue []); end
   
   # Return an array of the pages images
-  def images; page.images; end
+  def images; (page.images rescue []); end
   
   # Returns an array of image ids
-  def image_ids; images.map(&:id); end
+  def image_ids; (images.map(&:id) rescue []); end
   
   # Returns images not attached to product
   def available_images; Image.all - images; end
   
   # Returns the page slug
-  def slug; page.slug; end
+  def slug; (page.slug rescue ''); end
   
   # Overloads the base to_json to return what we want
   def to_json(*attrs); super self.class.params; end
