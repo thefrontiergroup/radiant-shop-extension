@@ -22,8 +22,13 @@ module Shop
       desc %{ iterates through each product within the scope }
       tag 'shop:products:each' do |tag|
         content = ''
-        
-        tag.locals.shop_products.each do |product|
+
+        limit = tag.attr.delete('limit').presence
+
+        products = tag.locals.shop_products
+        products = products[0, limit.to_i] if limit
+
+        products.each do |product,idx|
           tag.locals.shop_product = product
           content << tag.expand
         end
