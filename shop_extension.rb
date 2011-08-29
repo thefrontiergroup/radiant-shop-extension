@@ -40,10 +40,11 @@ class ShopExtension < Radiant::Extension
     
     ApplicationController.send :include, Shop::Controllers::ApplicationController
     SiteController.send :include, Shop::Controllers::SiteController
+    Admin::WelcomeController.send :include, Shop::Controllers::WelcomeController
     
     Page.send :include, Shop::Tags::Core,     Shop::Tags::Address, Shop::Tags::Card,    Shop::Tags::Cart
     Page.send :include, Shop::Tags::Category, Shop::Tags::Item,    Shop::Tags::Product
-    Page.send :include, Shop::Tags::Tax
+    Page.send :include, Shop::Tags::Tax,      Shop::Tags::User
     
     Radiant::Config['shop.layout_product']  ||= 'Product'
     Radiant::Config['shop.layout_category'] ||= 'Products'

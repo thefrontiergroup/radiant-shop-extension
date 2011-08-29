@@ -23,6 +23,7 @@ en:
   add_customer: "Add Customer"
   remove_customer: "This will delete the customer"
   delete_customer: "Delete Customer"
+  impersonate_customer: "Assume Identity"
   category: "Category"
   categories: "Categories"
   no_categories: "No Categories"

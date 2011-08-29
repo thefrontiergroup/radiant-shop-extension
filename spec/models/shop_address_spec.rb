@@ -6,7 +6,7 @@ describe ShopAddress do
   
   describe 'validations' do
     before :each do
-      @address = shop_billings(:order_billing)
+      @address = shop_address(:basic)
     end
     context 'unit' do
       it 'should not require' do
@@ -62,9 +62,9 @@ describe ShopAddress do
         @address.valid?.should be_true
       end
     end
-    context 'company' do
+    context 'business' do
       it 'should not require' do
-        @address.company = nil
+        @address.business = nil
         @address.valid?.should be_true
       end
     end

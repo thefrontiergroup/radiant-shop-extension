@@ -11,6 +11,11 @@ unless defined? RADIANT_ROOT
 end
 require "#{RADIANT_ROOT}/spec/spec_helper"
 
+require 'rubygems'
+require 'capybara/rails'
+require 'capybara/dsl'
+require 'ruby-debug'
+
 unless defined? SHOP_ROOT
   
   SHOP_ROOT = ShopExtension.root + '/spec'
@@ -23,6 +28,7 @@ unless defined? SHOP_ROOT
   
   Spec::Runner.configure do |config|
     config.mock_with :rr
+    config.include(Capybara, :type => :integration) 
   end
   
 end

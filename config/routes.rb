@@ -11,7 +11,7 @@ ActionController::Routing::Routes.draw do |map|
         product.resources :images,  :controller => 'products/images', :only => [:index, :create, :destroy], :collection => { :sort => :put }
       end
       
-      shop.resources :customers
+      shop.resources :customers, :member => {:impersonate => :get}, :collection => {:remove_impersonation => :get}
       
       shop.resources :orders, :except => [ :destroy ], :collection => { :export => :get }
       

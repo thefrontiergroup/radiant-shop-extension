@@ -25,6 +25,12 @@ describe ShopBilling do
         @address.valid?.should be_false
       end
     end
+    context 'business' do
+      it 'should require' do
+        @address.business = nil
+        @address.valid?.should be_false
+      end
+    end
   end
   
 end

@@ -6,4 +6,5 @@
         %span.name.attribute= link_to customer.name, edit_admin_shop_customer_path(customer)
       - body.modify do
         .modify
+          %span.impersonate_customer= link_to t('impersonate_customer'), impersonate_admin_shop_customer_path(customer)
           %span.remove= link_to t('remove'), remove_admin_shop_customer_path(customer)

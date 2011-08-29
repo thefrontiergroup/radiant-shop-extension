@@ -21,7 +21,8 @@ class ShopOrder < ActiveRecord::Base
   end
 
   def price
-    line_items.inject(BigDecimal.new('0.00')) { |price,line_item| price + line_item.price }
+    #line_items.inject(BigDecimal.new('0.00')) { |price,line_item| price + line_item.price }
+    line_items.map(&:price).sum + tax
   end  
 
   def tax
