@@ -6,8 +6,8 @@ end
 Given /^I am logged in as the user "([^"]*)"$/ do |user_full_name|
   user = User.find_by_name(user_full_name)
   Given %{I am on the login page}
-  When %{I fill in "Username" with #{user.login}}
-  When %{I fill in "Password" with #{@password}}
+  When %{I fill in "Username" with "#{user.login}"}
+  When %{I fill in "Password" with "#{@password}"}
   When %{I press "login" within "#login_form"}
 end
 

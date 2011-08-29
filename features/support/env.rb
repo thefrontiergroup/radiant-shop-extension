@@ -46,10 +46,9 @@ end
 #   Before('~@no-txn', '~@selenium', '~@culerity', '~@celerity', '~@javascript') do
 #     DatabaseCleaner.strategy = :transaction
 #   end
-#
 
-#Capybara.javascript_driver = :selenium
 
-Capybara.default_host = 'test.example.com'
-
+Capybara.default_driver         = :selenium
+Capybara.javascript_driver      = :selenium
 Capybara.ignore_hidden_elements = true
+Capybara.default_host           = 'test.example.com'
