@@ -31,13 +31,16 @@ describe 'Administrators impersonating customers' do
     end
 
     it 'has a link to allow the admin to assume a customers identity' do
-      save_and_open_page
       page.should have_content('Assume Identity')
     end
 
     context 'when the customers identity has been assumed' do
       before do
-        #click_link "Assume Identity"
+        click_link "Assume Identity"
+      end
+
+      it 'redirects to the home page' do
+        current_path.should == '/'
       end
 
       it 'impersonating_user? returns true' do
@@ -46,7 +49,6 @@ describe 'Administrators impersonating customers' do
 
       it 'current_user returns the new users identity'
 
-      it 'redirects to the home page'
 
       it 'displays the new users identity in the login name display'
 

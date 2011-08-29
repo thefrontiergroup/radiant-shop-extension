@@ -8,6 +8,10 @@ class Admin::Shop::CustomersController < Admin::ResourceController
   before_filter :assets_global
   before_filter :assets_index,  :only => [ :index ]
   before_filter :assets_edit,   :only => [ :edit, :update ]
+
+  def impersonate
+    redirect_to root_path
+  end
   
   private
     
