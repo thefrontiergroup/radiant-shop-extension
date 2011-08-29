@@ -30,11 +30,14 @@ describe 'Administrators impersonating customers' do
     before do
       home_page.update_attributes(:class_name => 'ShopPage', :published_at => Time.now - 1.hour)
       part.update_attributes(:content => <<-eof)
-Logged in as <r:user> <r:name />
+<r:user>
+  <r:if_user>
+  Logged in as <r:name />
   <r:if_impersonating>
     Wearing a disguise
     <a href="/admin/shop/customers/remove_impersonation">Remove Disguise</a>
   </r:if_impersonating>
+  </r:if_user>
 </r:user>
       eof
 
