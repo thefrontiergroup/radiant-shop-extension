@@ -10,6 +10,9 @@ class Admin::Shop::CustomersController < Admin::ResourceController
   before_filter :assets_edit,   :only => [ :edit, :update ]
 
   def impersonate
+    customer = ShopCustomer.find(params[:id])
+
+    impersonate_customer(customer.id)
     redirect_to root_path
   end
   

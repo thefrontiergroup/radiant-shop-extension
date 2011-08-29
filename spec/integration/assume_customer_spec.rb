@@ -23,9 +23,21 @@ describe 'Administrators impersonating customers' do
 
     it_should_behave_like 'an admin is logged in'
 
-    let!(:customer) { ShopCustomer.create!(:name => 'Julia Gillard', :login => 'rouge1', :password => 'carbontax', :password_confirmation => 'carbontax') }
+    let!(:customer)  { ShopCustomer.create!(:name => 'Julia Gillard', :login => 'rouge1', :password => 'carbontax', :password_confirmation => 'carbontax') }
+    let!(:home_page) { Page.find_by_slug('/') }
+    let!(:part)      { home_page.parts.first }
 
     before do
+      home_page.update_attributes(:class_name => 'ShopPage', :published_at => Time.now - 1.hour)
+      part.update_attributes(:content => <<-eof)
+Logged in as <r:user> <r:name />
+  <r:if_impersonating>
+    Wearing a disguise
+    <a href="/admin/customers/#{customer.id}/remove_impersonation">Remove Disguise</a>
+  </r:if_impersonating>
+</r:user>
+      eof
+
       click_link "Shop"
       click_link "Customers"
     end
@@ -43,15 +55,33 @@ describe 'Administrators impersonating customers' do
         current_path.should == '/'
       end
 
-      it 'impersonating_user? returns true' do
-
+      it 'displays the new users identity in the login name display' do
+        page.should have_content('Logged in as Julia Gillard')
       end
 
-      it 'current_user returns the new users identity'
+      it 'displays an indicator that the user is impersonating another' do
+        page.should have_content('Wearing a disguise')
+      end
 
+    end
 
-      it 'displays the new users identity in the login name display'
+    context 'when returning to the former identity' do
+      before do
+        click_link "Assume Identity"
+        click_link 'Remove Disguise'
+      end
 
+      it 'redirects be on the admin page' do
+        current_path.should == '/admin/shop/products'
+      end
+
+      it 'displays the former users identity in the login name display' do
+        page.should have_content('Logged in as Kevin Rudd')
+      end
+
+      it 'does not display the impersonating indicator' do
+        page.should have_no_content('Wearing a disguise')
+      end
     end
 
   end
