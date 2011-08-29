@@ -33,7 +33,7 @@ describe 'Administrators impersonating customers' do
 Logged in as <r:user> <r:name />
   <r:if_impersonating>
     Wearing a disguise
-    <a href="/admin/customers/#{customer.id}/remove_impersonation">Remove Disguise</a>
+    <a href="/admin/shop/customers/remove_impersonation">Remove Disguise</a>
   </r:if_impersonating>
 </r:user>
       eof
@@ -71,17 +71,14 @@ Logged in as <r:user> <r:name />
         click_link 'Remove Disguise'
       end
 
-      it 'redirects be on the admin page' do
-        current_path.should == '/admin/shop/products'
+      it 'redirects be on the admin shop customers page' do
+        current_path.should == '/admin/shop/customers'
       end
 
       it 'displays the former users identity in the login name display' do
         page.should have_content('Logged in as Kevin Rudd')
       end
 
-      it 'does not display the impersonating indicator' do
-        page.should have_no_content('Wearing a disguise')
-      end
     end
 
   end
