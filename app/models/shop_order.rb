@@ -11,6 +11,7 @@ class ShopOrder < ActiveRecord::Base
   
   has_one    :billing,      :class_name => 'ShopBilling',   :as => :addressable
   has_one    :shipping,     :class_name => 'ShopShipping',  :as => :addressable
+  has_one    :licensing,    :class_name => 'ShopLicensing', :as => :addressable
   
   accepts_nested_attributes_for :line_items,  :reject_if => :all_blank
   accepts_nested_attributes_for :billing,     :reject_if => :all_blank

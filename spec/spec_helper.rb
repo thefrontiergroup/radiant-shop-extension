@@ -15,6 +15,8 @@ require 'rubygems'
 require 'capybara/rails'
 require 'capybara/dsl'
 require 'ruby-debug'
+require 'spec/rails'
+require 'remarkable_rails'
 
 unless defined? SHOP_ROOT
   

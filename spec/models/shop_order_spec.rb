@@ -3,6 +3,14 @@ require File.dirname(__FILE__) + "/../spec_helper"
 describe ShopOrder do
   
   dataset :shop_orders, :shop_line_items, :shop_products, :shop_payments
+
+  it { should belong_to :created_by }
+  it { should belong_to :updated_by }
+  it { should belong_to :customer }
+
+  it { should have_one :billing }
+  it { should have_one :shipping }
+  it { should have_one :licensing }
   
   describe '#quantity' do
     it 'should return the total items' do
