@@ -50,5 +50,21 @@ class ShopAddressesDataset < Dataset::Base
       :postcode         => '1234',
       :addressable_id   => shop_orders(:several_items).id,
       :addressable_type => 'ShopOrder'
+
+    create_record :shop_licensing, :order_licensing,
+      :name             => 'Licensing Address',
+      :phone            => '1900 230 020',
+      :email            => 'licensing@licensing.com',
+      :business         => 'The Licenser',
+      :unit             => 'A',
+      :street_1         => '52 Astral Square',
+      :street_2         => 'Pole Street',
+      :city             => 'Placeland',
+      :state            => 'AX',
+      :country          => 'Licenstan',
+      :of_type          => 'licensing',
+      :postcode         => '5543',
+      :addressable_id   => shop_orders(:several_items).id,
+      :addressable_type => 'ShopOrder'
   end
 end
