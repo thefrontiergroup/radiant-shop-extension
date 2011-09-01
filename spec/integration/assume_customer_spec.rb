@@ -6,9 +6,9 @@ shared_examples_for 'an admin is logged in' do
     User.create!(:name => 'Kevin Rudd', :login => 'kevin07', :password => 'france', :password_confirmation => 'france', :admin => true)
 
     visit "/admin/login"
-    fill_in "Username or E-mail Address", :with => 'kevin07'
+    fill_in "Username", :with => 'kevin07'
     fill_in "Password", :with => 'france'
-    click_button "Login"
+    click_button "login"
   end
 
   after do
@@ -25,6 +25,9 @@ describe 'Administrators impersonating customers' do
 
     let!(:customer)  { ShopCustomer.create!(:name => 'Julia Gillard', :login => 'rouge1', :password => 'carbontax', :password_confirmation => 'carbontax') }
     let!(:home_page) { Page.find_by_slug('/') }
+
+    # The root category is required by the mg_shop plugin
+    let!(:root_page) { Page.create!(:slug => 'agrimaster', :title => 'Agrimaster', :breadcrumb => 'Multigrain') }
     let!(:part)      { home_page.parts.first }
 
     before do

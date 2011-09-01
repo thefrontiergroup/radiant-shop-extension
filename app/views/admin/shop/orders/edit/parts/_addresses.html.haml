@@ -1,9 +1,11 @@
 %h3 Billing
+#billing= render :partial => '/admin/shop/customers/edit/parts/address', :object => @shop_order.billing
 
-%div#billing
-  = render :partial => '/admin/shop/customers/edit/parts/address', :locals => { :address => @shop_order.billing }
-        
-%h3 Shipping
+- if @shop_order.shipping.present?
+  %h3 Shipping
+  #shipping= render :partial => '/admin/shop/customers/edit/parts/address', :object => @shop_order.shipping
 
-%div#shipping
-  = render :partial => '/admin/shop/customers/edit/parts/address', :locals => { :address => @shop_order.shipping }
+
+- if @shop_order.licensing.present?
+  %h3 Licensing
+  #licensing= render :partial => '/admin/shop/customers/edit/parts/address', :object => @shop_order.licensing
