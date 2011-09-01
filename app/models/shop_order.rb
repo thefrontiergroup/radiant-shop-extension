@@ -16,6 +16,7 @@ class ShopOrder < ActiveRecord::Base
   accepts_nested_attributes_for :line_items,  :reject_if => :all_blank
   accepts_nested_attributes_for :billing,     :reject_if => :all_blank
   accepts_nested_attributes_for :shipping,    :reject_if => :all_blank
+  accepts_nested_attributes_for :licensing,   :reject_if => :all_blank
  
   def cost
     line_items.inject(BigDecimal.new('0.00')) { |cost,line_item| cost + line_item.cost }
