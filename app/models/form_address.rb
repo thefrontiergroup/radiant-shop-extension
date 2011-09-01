@@ -26,61 +26,52 @@ class FormAddress
   end
 
   def create_order_addresses
-    if billing?
-      create_order_billing_address
-    end
-
+    create_order_billing_address if billing?
     create_order_shipping_address
+    create_order_licensing_address
 
-    unless (@billing.present? and @billing.valid?) and (@shipping.present? and @shipping.valid?)
+    unless @billing.present? && @billing.valid? && @shipping.present? && @shipping.valid? && @licensing.present? && @licensing.valid?
       @form.redirect_to = :back
     end
 
-    @result[:billing]  = (@billing.valid?  ? @billing.id  : false) rescue false
-    @result[:shipping] = (@shipping.valid? ? @shipping.id : false) rescue false
+    @result[:billing]   = @billing.present? && @billing.valid? && @billing.id
+    @result[:shipping]  = @shipping.present? && @shipping.valid? && @shipping.id
+    @result[:licensing] = @licensing.present? && @licensing.valid? && @licensing.id
   end
 
   def create_order_billing_address
     if @order.billing.present?
-      @billing = @order.billing
-      @billing.update_attributes(billing)
-
+      @order.billing.update_attributes(billing)
     else
-      @billing = ShopBilling.new(billing)
-      if @billing.save
-        @order.update_attribute(:billing, @billing)
-      end
-
+      @order.create_billing(billing)
     end
+    @billing = @order.billing
   end
 
   def create_order_shipping_address
     if shipping?
       if @order.shipping.present?
-        @shipping = @order.shipping
-        @shipping.update_attributes(shipping)
-
+        @order.shipping.update_attributes(shipping)
       else
-        @shipping = ShopShipping.new(shipping)
-        if @shipping.save
-          @order.update_attribute(:shipping, @shipping)
-        end
-
+        @order.create_shipping(shipping)
       end
-    else
-      if @order.shipping.present?
-        @shipping = @order.shipping
-
-      else
-        if @order.shipping.nil?
-          @shipping = ShopShipping.new(@billing.try(:attributes))
-          if @shipping.save
-            @order.update_attribute(:shipping, @shipping)
-          end
-        end
-      end
-
+    elsif @order.shipping.nil?
+      @order.create_shipping(@billing.try(:attributes))
     end
+    @shipping = @order.shipping
+  end
+
+  def create_order_licensing_address
+    if licensing?
+      if @order.licensing.present?
+        @order.licensing.update_attributes(licensing)
+      else
+        @order.create_licensing(licensing)
+      end
+    elsif @order.licensing.nil?
+      @order.create_licensing(@billing.try(:attributes))
+    end
+    @licensing = @order.licensing
   end
 
   # Returns an array of billing attributes
@@ -93,6 +84,10 @@ class FormAddress
     @data[:shipping]
   end
 
+  def licensing
+    @data[:licensing]
+  end
+
   # Returns whether form is configured for billing
   def billing?
     @config[:billing].present? and billing.present?
@@ -101,6 +96,11 @@ class FormAddress
   # Returns whether form is configured for shipping
   def shipping?
     @config[:shipping].present? and shipping.present?
+  end
+
+  # Returns whether form is configured for licensing
+  def licensing?
+    @config[:licensing].present? and licensing.present?
   end
 
 end

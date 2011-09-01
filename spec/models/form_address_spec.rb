@@ -4,13 +4,14 @@ describe FormAddress do
 
   dataset :shop_orders, :pages, :forms, :shop_addresses, :shop_customers
 
-  let(:session)         { {} }
-  let(:data)            { {} }
-  let(:page)            { pages(:home) }
-  let(:form_extensions) { { :extension => 'address', :billing => true, :shipping  => true } }
-  let(:form)            { forms(:checkout).tap { |form| form[:extensions] = form_extensions } }
-  let(:form_address)    { FormAddress.new(form, page, form_extensions) }
-  let(:one_item_order)        { shop_orders(:one_item) }
+  let(:session)            { { } }
+  let(:data)               { { } }
+  let(:page)               { pages(:home) }
+  let(:form_extensions)    { { :extension => 'address', :billing => true, :shipping  => true, :licensing => true } }
+  let(:form)               { forms(:checkout).tap { |form| form[:extensions] = form_extensions } }
+  let(:form_address)       { FormAddress.new(form, page, form_extensions) }
+  let(:one_item_order)     { shop_orders(:one_item) }
+  let(:several_item_order) { shop_orders(:several_items) }
 
   before do
     stub(page).data     { data }
@@ -35,14 +36,61 @@ describe FormAddress do
         should include :licensing
       end
 
-      it 'creates a billing address'
+      context 'when a valid billing address is posted' do
+
+        let(:data) { { :billing => several_item_order.billing.attributes } }
+
+        before do
+          data[:billing].delete(['id', 'addressable_id', 'addressable_type'])
+          data[:billing].merge!('abn' => '4', 'surname' => 'lawjones')
+        end
+
+        it 'creates a billing address' do
+          expect { subject }.to change(ShopBilling, :count).by(1)
+        end
+
+        it 'returns the billing id' do
+          subject[:billing].should == one_item_order.reload.billing.reload.id
+        end
+
+      end
 
       context 'when a shipping address is provided' do
-        it 'creates a shipping address'
+
+        let(:data) { { :shipping => several_item_order.shipping.attributes } }
+
+        before do
+          data[:shipping].delete(['id', 'addressable_id', 'addressable_type'])
+          data[:shipping].merge!('surname' => 'crick')
+        end
+
+        it 'creates a shipping address' do
+          expect { subject }.to change(ShopShipping, :count).by(1)
+        end
+
+        it 'returns the shipping id' do
+          subject[:shipping].should == one_item_order.shipping.reload.id
+        end
+
       end
 
       context 'when a licensing address is provided' do
-        it 'creates a licensing address'
+
+        let(:data) { { :licensing => several_item_order.shipping.attributes } }
+
+        before do
+          data[:licensing].delete(['id', 'addressable_id', 'addressable_type'])
+          data[:licensing].merge!('surname' => 'boblaw')
+        end
+
+        it 'creates a licensing address' do
+          expect { subject }.to change(ShopLicensing, :count).by(1)
+        end
+
+        it 'returns the licensing id' do
+          subject[:licensing].should == one_item_order.licensing.reload.id
+        end
+
       end
 
     end
