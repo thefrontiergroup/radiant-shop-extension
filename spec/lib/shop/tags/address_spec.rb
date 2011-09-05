@@ -35,6 +35,7 @@ describe Shop::Tags::Address do
         @order = shop_orders(:several_items)
         @address = send(:"shop_#{address_type}s", :"order_#{address_type}")
         stub(Shop::Tags::Helpers).current_order(anything) { @order }
+        UserActionObserver.current_user = @order.customer
       end
 
       describe "shop:cart:#{address_type}:#{address_type}" do
@@ -104,6 +105,14 @@ describe Shop::Tags::Address do
       end
 
       describe 'attributes' do
+        context "shop:cart:#{address_type}:login" do
+          it 'should return the login of the customer' do
+            tag = %{<r:shop:cart:#{address_type}><r:login /></r:shop:cart:#{address_type}>}
+            exp = @order.customer.login
+
+            @page.should render(tag).as(exp)
+          end
+        end
         context "shop:cart:#{address_type}:id" do
           it 'should return the id' do
             tag = %{<r:shop:cart:#{address_type}><r:id /></r:shop:cart:#{address_type}>}

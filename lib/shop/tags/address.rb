@@ -33,7 +33,7 @@ module Shop
             # Rescue is so we can have null inputs if no address exists
             result = (tag.locals.send(of_type).send(method) rescue nil)
             result = (Forms::Tags::Responses.current(tag,request).result[of_type.to_sym][method] rescue nil) unless result.present?
-            result = (UserActionObserver.current_user.send(of_type).send(method) rescue nil) unless result.present?
+            result = (UserActionObserver.current_user.send(method) rescue nil) unless result.present?
 
             result
           end
