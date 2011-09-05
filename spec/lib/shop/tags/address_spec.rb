@@ -9,7 +9,7 @@ describe Shop::Tags::Address do
 
   dataset :pages, :shop_addresses, :shop_orders
 
-  let(:tags)          { %w(id name phone email business unit
+  let(:tags)          { %w(id login name phone email business unit
       street_1 street_2 city state country postcode) }
   let(:all_tags) do
     all_tags = address_types.map { |type| "shop:cart:#{type}" }
