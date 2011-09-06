@@ -53,6 +53,18 @@ describe FormAddress do
           subject[:billing].should == one_item_order.reload.billing.reload.id
         end
 
+        it 'copies the billing address to the shipping address' do
+          subject
+          one_item_order.reload.shipping.abn.should == one_item_order.billing.abn
+          one_item_order.reload.shipping.name.should == one_item_order.billing.name
+        end
+
+        it 'copies the billing address to the licensing address' do
+          subject
+          one_item_order.reload.licensing.abn.should == one_item_order.billing.abn
+          one_item_order.reload.licensing.name.should == one_item_order.billing.name
+        end
+
       end
 
       context 'when a shipping address is provided' do

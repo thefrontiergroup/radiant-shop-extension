@@ -7,7 +7,7 @@ describe ShopLicensing do
   describe 'scope' do
     let(:licensing) { ShopLicensing.new }
 
-    it 'should have a of_type of billing' do
+    it 'should have a of_type of licensing' do
       licensing.of_type.should == 'licensing'
     end
   end
