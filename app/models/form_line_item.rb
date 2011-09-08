@@ -16,10 +16,10 @@ class FormLineItem
       if line_items.present?
         line_items.each do |id,values|
           @data[:line_item] = values
-          @result[:modify] = @order.modify(line_item_id,line_item_quantity)
+          @result[:modify] = @order.modify(line_item_id,line_item_quantity,line_item_discount_code)
         end
       else
-        @result[:modify] = @order.modify(line_item_id,line_item_quantity)
+        @result[:modify] = @order.modify(line_item_id,line_item_quantity,line_item_discount_code)
       end
     when 'remove'
       @result[:remove] = @order.remove(line_item_id)
@@ -56,6 +56,10 @@ class FormLineItem
   
   def line_item_quantity
     line_item[:quantity]
+  end
+
+  def line_item_discount_code
+    line_item[:discount_code]
   end
   
 end
