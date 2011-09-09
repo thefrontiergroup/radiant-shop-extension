@@ -21,6 +21,7 @@ class ShopExtension < Radiant::Extension
     tab "Shop" do
       add_item "Products",  "/admin/shop"
       add_item "Orders",    "/admin/shop/orders"
+      add_item "Customers", "/admin/shop/customers"
     end
     
     unless defined? admin.products
