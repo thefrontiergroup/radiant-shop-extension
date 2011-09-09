@@ -31,6 +31,17 @@ class Admin::Shop::CustomersController < Admin::ResourceController
     redirect_to admin_shop_customers_path
   end
 
+  def refresh
+    raise 'not yet implemented'
+
+    # FIXME: This will need to update user credentials from the web services
+    # layer
+    #
+    # Currently there is no API endpoint on the web services layer to get this
+    # data. Once it is available then this will need to be implemented.
+    redirect_to :action => :index
+  end
+
   private
 
   def prepare_customer
