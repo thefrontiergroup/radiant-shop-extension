@@ -11,6 +11,8 @@ class ShopLineItem < ActiveRecord::Base
   validates_uniqueness_of   :item_id, :scope => [ :order_id, :item_type ]
   
   validates_numericality_of :item_price, :greater_than => 0.00,    :allow_nil => true,     :precisions => 2
+
+  alias_attribute :value, :item_price
   
   def cost
     (item_price * quantity)
