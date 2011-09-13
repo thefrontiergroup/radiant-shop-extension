@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + "/../spec_helper"
-  
+
 describe ShopOrder do
-  
+
   dataset :shop_orders, :shop_line_items, :shop_products, :shop_payments
 
   it { should belong_to :created_by }
@@ -11,14 +11,14 @@ describe ShopOrder do
   it { should have_one :billing }
   it { should have_one :shipping }
   it { should have_one :licensing }
-  
+
   describe '#quantity' do
     it 'should return the total items' do
       shop_orders(:empty).quantity.should         === shop_orders(:empty).line_items.sum(:quantity)
       shop_orders(:several_items).quantity.should === shop_orders(:several_items).line_items.sum(:quantity)
     end
   end
-  
+
   describe '#weight' do
     it 'should calculate a total weight' do
       shop_orders(:empty).weight.should           === lambda{ weight = 0; shop_orders(:empty).line_items.map { |l| weight += l.weight }; weight }.call
@@ -30,7 +30,7 @@ describe ShopOrder do
     context 'inclusive tax' do
       it 'should calculate from the line items alone' do
         Radiant::Config['shop.tax_strategy'] = 'inclusive'
-        
+
         shop_orders(:empty).price.should            === lambda{ price = 0; shop_orders(:empty).line_items.map { |l| price += l.price }; price }.call
         shop_orders(:several_items).price.should    === lambda{ price = 0; shop_orders(:several_items).line_items.map { |l| price += l.price }; price }.call
       end
@@ -59,7 +59,7 @@ describe ShopOrder do
       end
     end
   end
-  
+
   describe '#new?' do
     context 'success' do
       it 'should return true' do
@@ -98,7 +98,7 @@ describe ShopOrder do
     context 'success' do
       it 'should return true' do
         shop_orders(:several_items).update_attribute(:status, 'paid')
-        
+
         shop_orders(:several_items).payment.should  === shop_payments(:visa)
         shop_orders(:several_items).paid?.should    === true
       end
@@ -126,8 +126,8 @@ describe ShopOrder do
       end
     end
   end
-    
-  describe '#add!' do   
+
+  describe '#add!' do
     context 'item not in cart' do
       before :each do
         @order = shop_orders(:empty)
@@ -136,7 +136,7 @@ describe ShopOrder do
       context 'no quantity or type passed' do
         it 'should assign a default type and default quantity' do
           @order.add!(@product.id)
-          
+
           @order.line_items.count.should           === 1
           @order.line_items.first.item_type.should === 'ShopProduct'
           @order.line_items.first.quantity.should  === 1
@@ -146,21 +146,25 @@ describe ShopOrder do
       context 'quantity passed' do
         it 'should assign the default type and new quantity' do
           @order.add!(@product.id, 2)
-          
+
           @order.line_items.count.should           === 1
           @order.line_items.first.item_type.should === 'ShopProduct'
           @order.line_items.first.quantity.should  === 2
-          @order.line_items.first.item.should      === @product              
+          @order.line_items.first.item.should      === @product
         end
       end
       context 'type and quantity passed' do
         it 'should assign the new type and new quantity' do
           @order.add!(@product.id, 2, 'ShopProductAlternative')
-          
+
           @order.line_items.count.should           === 1
           @order.quantity.should                   === 2
           @order.line_items.first.item_type.should === 'ShopProductAlternative'
         end
+      end
+      it 'calls the line_item_added callback' do
+        mock(@order).line_item_added(anything)
+        @order.add!(@product.id)
       end
     end
     context 'item in cart' do
@@ -171,7 +175,7 @@ describe ShopOrder do
       context 'no quantity or type passed' do
         it 'should assign a default type and default quantity' do
           @order.add!(@line_item.id)
-          
+
           @order.line_items.count.should === 1
           @order.quantity.should         === 1
         end
@@ -179,7 +183,7 @@ describe ShopOrder do
       context 'quantity passed' do
         it 'should assign the default type and new quantity' do
           @order.add!(@line_item.id, 2)
-          
+
           @order.line_items.count.should === 1
           @order.quantity.should         === 3
         end
@@ -194,7 +198,7 @@ describe ShopOrder do
       end
       it 'should not update the item' do
         @order.modify!(@line_item.id)
-        
+
         @order.quantity.should === 1
       end
     end
@@ -207,10 +211,10 @@ describe ShopOrder do
         it 'should assign that quantity' do
           @order.modify!(@line_item.id, 1)
           @order.quantity.should === 1
-          
+
           @order.modify!(@line_item.id, 2)
           @order.quantity.should === 2
-          
+
           @order.modify!(@line_item.id, 100)
           @order.quantity.should === 100
         end
@@ -218,7 +222,7 @@ describe ShopOrder do
       context 'quantity <= 0' do
         it 'should remove that item for 0' do
           @order.modify!(@line_item.id, 0)
-          @order.quantity.should === 0         
+          @order.quantity.should === 0
         end
         it 'should remove that item for -1' do
           @order.modify!(@line_item.id, -1)
@@ -232,12 +236,20 @@ describe ShopOrder do
     end
   end
   describe '#remove!' do
+    before { @order = shop_orders(:several_items) }
+
     it 'should remove the item' do
-      @order = shop_orders(:several_items)
       items = @order.line_items.count
-      
+
       @order.remove!(@order.line_items.first.id)
       @order.line_items.count.should === items - 1
+    end
+
+    it 'calls the line_item_removed callback' do
+      item = @order.line_items.first
+
+      mock(@order).line_item_removed(item)
+      @order.remove!(item.id)
     end
   end
   describe '#clear!' do
@@ -247,7 +259,7 @@ describe ShopOrder do
       @order.quantity.should === 0
     end
   end
-  
+
   describe '.scope_by_status' do
     context 'no scoping' do
       before :each do
@@ -307,11 +319,11 @@ describe ShopOrder do
       end
     end
   end
-  
+
   describe '.params' do
     it 'should have a set of standard parameters' do
       ShopOrder.params.should === [ :id, :notes, :status ]
     end
   end
-  
+
 end
