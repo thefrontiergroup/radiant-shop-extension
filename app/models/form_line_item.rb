@@ -8,10 +8,17 @@ class FormLineItem
   def create
     @result ||= {}
     find_or_create_current_order
-    
+
     case process
     when 'add'
-      @result[:add]    = @order.add(line_item_item_id,line_item_quantity,line_item_item_type)
+      if line_items.present?
+        line_items.each do |id,values|
+          @data[:line_item] = values
+          @result[:add]    = @order.add(line_item_item_id,line_item_quantity,line_item_item_type)
+        end
+      else
+        @result[:add]    = @order.add(line_item_item_id,line_item_quantity,line_item_item_type)
+      end
     when 'modify'
       if line_items.present?
         line_items.each do |id,values|
