@@ -25,7 +25,7 @@ module Shop
 
       def current_impersonated_customer
         if customer_id = request.session[:impersonated_customer_id]
-          ShopCustomer.find_by_id(customer_id) 
+          ::User.find_by_id(customer_id)
         end
       end
 

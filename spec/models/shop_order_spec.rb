@@ -162,6 +162,10 @@ describe ShopOrder do
           @order.line_items.first.item_type.should === 'ShopProductAlternative'
         end
       end
+      it 'calls the line_item_added callback' do
+        mock(@order).line_item_added(anything)
+        @order.add!(@product.id)
+      end
     end
     context 'item in cart' do
       before :each do
@@ -240,12 +244,20 @@ describe ShopOrder do
     end
   end
   describe '#remove!' do
+    before { @order = shop_orders(:several_items) }
+
     it 'should remove the item' do
-      @order = shop_orders(:several_items)
       items = @order.line_items.count
 
       @order.remove!(@order.line_items.first.id)
       @order.line_items.count.should === items - 1
+    end
+
+    it 'calls the line_item_removed callback' do
+      item = @order.line_items.first
+
+      mock(@order).line_item_removed(item)
+      @order.remove!(item.id)
     end
   end
   describe '#clear!' do
