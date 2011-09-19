@@ -233,6 +233,14 @@ describe ShopOrder do
           @order.quantity.should === 0
         end
       end
+      context 'discount code set' do
+        let(:discount_code) { 'deliciouscheesesticks' }
+
+        it 'should set the line item discount code' do
+          @order.modify(@line_item.id, 3, discount_code)
+          @line_item.reload.discount_code.should == discount_code
+        end
+      end
     end
   end
   describe '#remove!' do

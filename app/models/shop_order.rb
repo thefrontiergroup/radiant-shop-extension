@@ -68,13 +68,13 @@ class ShopOrder < ActiveRecord::Base
     false
   end
 
-  def modify!(id, quantity = 1)
+  def modify!(id, quantity = 1, discount_code = nil)
     quantity = quantity.to_i
     if quantity <= 0
       remove!(id)
     else
       line_item = line_items.find(id)
-      line_item.update_attributes! :quantity => quantity
+      line_item.update_attributes! :quantity => quantity, :discount_code => discount_code
     end
   end
 
