@@ -18,16 +18,12 @@ class ShopLineItem < ActiveRecord::Base
   # XXX: If an item defines purchaseable? it can return false to indicate that
   # the line item is a special line item (like a discount), that cannot be added
   # or removed from the cart
-  def self.purchaseable?(line_item)
-    if line_item.item && line_item.item.respond_to?(:purchaseable?)
-      line_item.item.purchaseable?
+  def purchaseable?
+    if item && item.respond_to?(:purchaseable?)
+      item.purchaseable?
     else
       true
     end
-  end
-
-  def purchaseable?
-    self.class.purchaseable?(self)
   end
   
   def cost
