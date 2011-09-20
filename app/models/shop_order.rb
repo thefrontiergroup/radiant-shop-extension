@@ -19,21 +19,19 @@ class ShopOrder < ActiveRecord::Base
   accepts_nested_attributes_for :licensing,   :reject_if => :all_blank
 
   def cost
-    line_items.inject(BigDecimal.new('0.00')) { |cost,line_item| cost + line_item.cost }
+    line_items.map(&:cost).sum
   end
 
   def price
-    #line_items.inject(BigDecimal.new('0.00')) { |price,line_item| price + line_item.price }
-    line_items.map(&:price).sum + tax
+    line_items.map(&:price).sum
   end
 
   def tax
-    line_items.inject(BigDecimal.new('0.00')) { |tax,line_item| tax + line_item.tax }
+    line_items.map(&:tax).sum
   end
 
   def weight
-    weight = 0; line_items.map { |l| weight += l.weight }
-    weight
+    line_items.map(&:weight).sum
   end
 
   def add!(id, quantity = nil, type = nil)

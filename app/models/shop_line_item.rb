@@ -10,9 +10,21 @@ class ShopLineItem < ActiveRecord::Base
   
   validates_uniqueness_of   :item_id, :scope => [ :order_id, :item_type ]
   
-  validates_numericality_of :item_price, :greater_than => 0.00,    :allow_nil => true,     :precisions => 2
+  validates_numericality_of :item_price, :greater_than => 0.00, :allow_nil => true, :if => :purchaseable?
+  validates_numericality_of :item_price, :unless => :purchaseable?
 
   alias_attribute :value, :item_price
+
+  # XXX: If an item defines purchaseable? it can return false to indicate that
+  # the line item is a special line item (like a discount), that cannot be added
+  # or removed from the cart
+  def purchaseable?
+    if item && item.respond_to?(:purchaseable?) 
+      item.purchaseable?
+    else
+      true
+    end
+  end
   
   def cost
     (item_price * quantity)
