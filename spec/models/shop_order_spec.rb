@@ -133,6 +133,7 @@ describe ShopOrder do
         @order = shop_orders(:empty)
         @product = shop_products(:crusty_bread)
       end
+
       context 'no quantity or type passed' do
         it 'should assign a default type and default quantity' do
           @order.add!(@product.id)
@@ -143,6 +144,7 @@ describe ShopOrder do
           @order.line_items.first.item.should      === @product
         end
       end
+
       context 'quantity passed' do
         it 'should assign the default type and new quantity' do
           @order.add!(@product.id, 2)
@@ -153,6 +155,7 @@ describe ShopOrder do
           @order.line_items.first.item.should      === @product
         end
       end
+
       context 'type and quantity passed' do
         it 'should assign the new type and new quantity' do
           @order.add!(@product.id, 2, 'ShopProductAlternative')
@@ -162,16 +165,32 @@ describe ShopOrder do
           @order.line_items.first.item_type.should === 'ShopProductAlternative'
         end
       end
+
       it 'calls the line_item_added callback' do
         mock(@order).line_item_added(anything)
         @order.add!(@product.id)
       end
+
+      context 'the item is not purchaseable' do
+        before do
+          line_item = ShopLineItem.new
+          stub(line_item).purchaseable?.returns false
+          line_item
+          mock(ShopLineItem).new.with_any_args { line_item }
+        end
+      
+        it 'returns false' do
+          @order.add!(@product.id).should be_false
+        end
+      end
     end
+
     context 'item in cart' do
       before :each do
         @order      = shop_orders(:one_item)
         @line_item  = @order.line_items.first
       end
+
       context 'no quantity or type passed' do
         it 'should assign a default type and default quantity' do
           @order.add!(@line_item.id)
@@ -180,6 +199,7 @@ describe ShopOrder do
           @order.quantity.should         === 1
         end
       end
+
       context 'quantity passed' do
         it 'should assign the default type and new quantity' do
           @order.add!(@line_item.id, 2)
@@ -188,14 +208,25 @@ describe ShopOrder do
           @order.quantity.should         === 3
         end
       end
+
+      context 'the item is not purchaseable' do
+        before do
+          stub(ShopLineItem).find.with_any_args { stub!.purchaseable?.returns false }
+        end
+      
+        it 'returns false' do
+          @order.add!(@line_item.id, 2).should be_false
+        end
+      end
     end
   end
+
   describe '#modify!' do
+    before :each do
+      @order = shop_orders(:one_item)
+      @line_item = @order.line_items.first
+    end
     context 'quantity not set' do
-      before :each do
-        @order = shop_orders(:one_item)
-        @line_item = @order.line_items.first
-      end
       it 'should not update the item' do
         @order.modify!(@line_item.id)
 
@@ -203,10 +234,6 @@ describe ShopOrder do
       end
     end
     context 'quantity set' do
-      before :each do
-        @order = shop_orders(:one_item)
-        @line_item = @order.line_items.first
-      end
       context 'quantity > 0' do
         it 'should assign that quantity' do
           @order.modify!(@line_item.id, 1)
@@ -240,6 +267,16 @@ describe ShopOrder do
           @order.modify(@line_item.id, 3, discount_code)
           @line_item.reload.discount_code.should == discount_code
         end
+      end
+    end
+
+    context 'the item is not purchaseable' do
+      before do
+        stub(ShopLineItem).find.with_any_args { stub!.purchaseable?.returns false }
+      end
+    
+      it 'returns false' do
+        @order.modify(@line_item.id, 2).should be_false
       end
     end
   end

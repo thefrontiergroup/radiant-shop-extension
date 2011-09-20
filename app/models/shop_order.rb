@@ -37,14 +37,17 @@ class ShopOrder < ActiveRecord::Base
   def add!(id, quantity = nil, type = nil)
     result = true
 
-    begin
-      line_item = line_items.find(id)
-      quantity = line_item.quantity + quantity.to_i
+    line_item = line_items.find_by_id(id)
+    if line_item.present?
+      return false unless line_item.purchaseable?
 
+      quantity = line_item.quantity + quantity.to_i
       modify!(id,quantity)
-    rescue
+
+    else
       quantity  ||= 1
       type      ||= 'ShopProduct'
+
 
       if line_items.exists?({:item_id => id, :item_type => type})
         line_item = line_items.first(:conditions => {:item_id => id, :item_type => type})
@@ -52,7 +55,9 @@ class ShopOrder < ActiveRecord::Base
 
         modify!(line_item.id, quantity)
       else
-        line_items.create!({:item_id => id, :item_type => type, :quantity => quantity})
+        line_item = line_items.build(:item_id => id, :item_type => type, :quantity => quantity)
+        return false unless line_item.purchaseable?
+        line_item.save!
       end
     end
 
@@ -72,6 +77,7 @@ class ShopOrder < ActiveRecord::Base
       remove!(id)
     else
       line_item = line_items.find(id)
+      raise ArgumentError unless line_item.purchaseable?
       line_item.update_attributes! :quantity => quantity, :discount_code => discount_code
     end
   end
@@ -79,11 +85,13 @@ class ShopOrder < ActiveRecord::Base
   def modify(*attrs)
     modify!(*attrs)
     true
-  rescue ActiveRecord::RecordNotFound, ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved
+  rescue ActiveRecord::RecordNotFound, ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved, ArgumentError
     false
   end
 
   def remove!(id)
+    line_item = line_items.find(id)
+    raise ArgumentError unless line_item.purchaseable?
     line_items.destroy(id)
     true
   end
@@ -91,7 +99,7 @@ class ShopOrder < ActiveRecord::Base
   def remove(*attrs)
     remove!(*attrs)
     true
-  rescue ActiveRecord::RecordNotFound
+  rescue ActiveRecord::RecordNotFound, ArgumentError
     false
   end
 
