@@ -31,7 +31,11 @@ class ShopOrder < ActiveRecord::Base
   end
 
   def weight
-    line_items.map(&:weight).sum
+    line_items.purchaseable.map(&:weight).sum
+  end
+
+  def quantity
+    line_items.purchaseable.sum(:quantity)
   end
 
   def add!(id, quantity = nil, type = nil)
@@ -105,10 +109,6 @@ class ShopOrder < ActiveRecord::Base
 
   def clear!
     line_items.destroy_all
-  end
-
-  def quantity
-    self.line_items.sum(:quantity)
   end
 
   def new?

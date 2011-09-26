@@ -17,12 +17,32 @@ describe ShopOrder do
       shop_orders(:empty).quantity.should         === shop_orders(:empty).line_items.sum(:quantity)
       shop_orders(:several_items).quantity.should === shop_orders(:several_items).line_items.sum(:quantity)
     end
+
+    context 'includes an unpurchaseable line item' do
+      before do
+        shop_orders(:empty).line_items.create(:item => shop_products(:crusty_bread), :quantity => 1, :purchaseable => false)
+      end
+
+      it "does not include the unpurchaseable item's quantity" do
+        shop_orders(:empty).quantity.should be_zero
+      end
+    end
   end
 
   describe '#weight' do
     it 'should calculate a total weight' do
       shop_orders(:empty).weight.should           === lambda{ weight = 0; shop_orders(:empty).line_items.map { |l| weight += l.weight }; weight }.call
       shop_orders(:several_items).weight.should   === lambda{ weight = 0; shop_orders(:several_items).line_items.map { |l| weight += l.weight }; weight }.call
+    end
+
+    context 'includes an unpurchaseable line item' do
+      before do
+        shop_orders(:empty).line_items.create(:item => shop_products(:crusty_bread), :quantity => 1, :purchaseable => false)
+      end
+
+      it "does not include the unpurchaseable items's weight" do
+        shop_orders(:empty).weight.should be_zero
+      end
     end
   end
 

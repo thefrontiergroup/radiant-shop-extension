@@ -1,5 +1,5 @@
 class ShopLineItem < ActiveRecord::Base
-  
+
   belongs_to  :order,       :class_name   => 'ShopOrder'
   has_one     :customer,    :class_name   => 'User', :through => :order, :source => :customer
   belongs_to  :item,        :polymorphic  => true
@@ -15,17 +15,8 @@ class ShopLineItem < ActiveRecord::Base
 
   alias_attribute :value, :item_price
 
-  # XXX: If an item defines purchaseable? it can return false to indicate that
-  # the line item is a special line item (like a discount), that cannot be added
-  # or removed from the cart
-  def purchaseable?
-    if item && item.respond_to?(:purchaseable?)
-      item.purchaseable?
-    else
-      true
-    end
-  end
-  
+  named_scope :purchaseable, :conditions => {:purchaseable => true}
+
   def cost
     (item_price * quantity)
   end
