@@ -83,27 +83,5 @@ describe ShopLineItem do
       ShopLineItem.params.should === { :only => ShopLineItem.attrs, :methods => ShopLineItem.methds }
     end
   end
-
-  describe '#purchaseable?' do
-    let(:line_item) { ShopLineItem.new }
-    subject { line_item.purchaseable? }
-
-    context 'when the item is a product' do
-      before { line_item.item = ShopProduct.new }
-      it { should be_true }
-    end
-
-    context 'when the item is not purchaseable' do
-      before do
-        line_item.item = Class.new(ShopProduct) do
-          def purchaseable?
-            false
-          end
-        end.new
-      end
-
-      it { should be_false }
-    end
-  end
   
 end
