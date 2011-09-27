@@ -16,6 +16,7 @@ class ShopLineItem < ActiveRecord::Base
   alias_attribute :value, :item_price
 
   named_scope :purchaseable, :conditions => {:purchaseable => true}
+  named_scope :unpurchaseable, :conditions => {:purchaseable => false}
 
   def cost
     (item_price * quantity)
