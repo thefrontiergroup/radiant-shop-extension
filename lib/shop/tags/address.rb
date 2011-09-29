@@ -28,13 +28,14 @@ module Shop
           tag.expand unless tag.locals.send(of_type).present?
         end
 
-        [:id, :login, :name, :phone, :business, :email, :unit, :street_1, :street_2, :city, :state, :country, :postcode].each do |method|
+        [:id, :name, :phone, :business, :email, :unit, :street_1, :street_2, :city, :state, :country, :postcode].each do |method|
           tag "shop:cart:#{of_type}:#{method}" do |tag|
-            # XXX: This is very lazy code
-            (address = tag.locals.send(of_type)).present? && address.respond_to?(method) && address.send(method).presence ||
-              Forms::Tags::Responses.current(tag, request).try(:result).try(:[], of_type.to_sym).try(:[], method).presence ||
-              UserActionObserver.current_user.try(method).presence
+            tag.locals.send(of_type).try(method)
           end
+        end
+
+        tag "shop:cart:#{of_type}:login" do |tag|
+          UserActionObserver.current_user.try(:login)
         end
       end
     end
