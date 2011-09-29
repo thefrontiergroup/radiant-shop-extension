@@ -3,7 +3,7 @@ class ShopOrder < ActiveRecord::Base
   default_scope :order => 'shop_orders.updated_at DESC'
 
   has_one    :payment,      :class_name => 'ShopPayment',   :foreign_key => :order_id,  :dependent => :destroy
-  has_many   :line_items,   :class_name => 'ShopLineItem',  :foreign_key => :order_id,  :dependent => :destroy, :after_remove => :line_item_removed, :after_add => :line_item_added
+  has_many   :line_items,   :class_name => 'ShopLineItem',  :foreign_key => :order_id,  :dependent => :destroy, :after_remove => :line_item_removed, :after_add => :line_item_added, :order => 'purchaseable DESC, created_at DESC'
 
   belongs_to :created_by,   :class_name => 'User'
   belongs_to :updated_by,   :class_name => 'User'

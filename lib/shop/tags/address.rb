@@ -9,9 +9,9 @@ module Shop
 
         @type@ = (billing)|(shipping)|(licensing)
       }
-      [:billing,:shipping,:licensing].each do |of_type|
+      [:billing, :shipping, :licensing].each do |of_type|
         tag "shop:cart:#{of_type}" do |tag|
-          tag.locals.send(of_type, Shop::Tags::Helpers.current_address(tag,of_type))
+          tag.locals.send(of_type, Shop::Tags::Helpers.current_address(tag, of_type))
 
           tag.expand
         end
@@ -30,16 +30,13 @@ module Shop
 
         [:id, :login, :name, :phone, :business, :email, :unit, :street_1, :street_2, :city, :state, :country, :postcode].each do |method|
           tag "shop:cart:#{of_type}:#{method}" do |tag|
-            # Rescue is so we can have null inputs if no address exists
-            result = (tag.locals.send(of_type).send(method) rescue nil)
-            result = (Forms::Tags::Responses.current(tag,request).result[of_type.to_sym][method] rescue nil) unless result.present?
-            result = (UserActionObserver.current_user.send(method) rescue nil) unless result.present?
-
-            result
+            # XXX: This is very lazy code
+            (address = tag.locals.send(of_type)).present? && address.respond_to?(method) && address.send(method).presence ||
+              Forms::Tags::Responses.current(tag, request).try(:result).try(:[], of_type.to_sym).try(:[], method).presence ||
+              UserActionObserver.current_user.try(method).presence
           end
         end
       end
-
     end
   end
 end

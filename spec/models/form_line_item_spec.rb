@@ -34,7 +34,7 @@ describe FormLineItem do
           order.reload.line_items.should be_present
         end
 
-        it 'should assign the corrct item to the line item' do
+        it 'should assign the correct item to the line item' do
           subject.create
           order.reload.line_items.last.item.should == product_one
         end
@@ -58,16 +58,18 @@ describe FormLineItem do
           order.reload.line_items.size.should == 2
         end
 
-        it 'should assign the corrct item to each line item' do
+        it 'should assign the correct item to each line item' do
           subject.create
-          order.reload.line_items.first.item.should == product_one
-          order.reload.line_items.last.item.should  == product_two
+          items = order.reload.line_items.sort_by(&:item_id)
+          items.first.item.should  == product_two
+          items.last.item.should == product_one
         end
 
         it 'should set the corrrect quantity for each line item' do
           subject.create
-          order.reload.line_items.first.quantity.should == 5
-          order.reload.line_items.last.quantity.should == 8
+          items = order.reload.line_items.sort_by(&:item_id)
+          items.first.quantity.should == 8
+          items.last.quantity.should == 5
         end
 
       end

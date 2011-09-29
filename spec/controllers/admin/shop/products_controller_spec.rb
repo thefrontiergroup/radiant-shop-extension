@@ -14,12 +14,14 @@ describe Admin::Shop::ProductsController do
   describe '#index' do
     context 'html' do
       it 'should render index' do
+        pending
         get :index
         
         response.should render_template(:index)
       end
       
       it 'should also assign shop_categories' do
+        pending
         get :index
         
         assigns(:shop_categories).should == ShopCategory.all
@@ -28,6 +30,7 @@ describe Admin::Shop::ProductsController do
     
     context 'js' do
       it 'should render the collection partial and success status' do
+        pending
         get :index, :format => 'js'
         
         response.should be_success
@@ -37,6 +40,7 @@ describe Admin::Shop::ProductsController do
     
     context 'json' do
       it 'should return a json object of the array and success status' do
+        pending
         get :index, :format => 'json'
         
         response.should be_success
