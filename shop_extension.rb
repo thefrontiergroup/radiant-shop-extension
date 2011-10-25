@@ -41,6 +41,7 @@ class ShopExtension < Radiant::Extension
     ApplicationController.send :include, Shop::Controllers::ApplicationController
     SiteController.send :include, Shop::Controllers::SiteController
     Admin::WelcomeController.send :include, Shop::Controllers::WelcomeController
+    LoginSystem.send :include, Shop::LoginSystem
     
     Page.send :include, Shop::Tags::Core,     Shop::Tags::Address, Shop::Tags::Card,    Shop::Tags::Cart
     Page.send :include, Shop::Tags::Category, Shop::Tags::Item,    Shop::Tags::Product
