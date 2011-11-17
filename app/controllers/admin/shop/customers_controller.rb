@@ -5,6 +5,7 @@ class Admin::Shop::CustomersController < Admin::ResourceController
   before_filter :config_global
   before_filter :config_new,    :only => [ :new, :create ]
   before_filter :config_edit,   :only => [ :edit, :update ]
+  before_filter :config_index,  :only => [ :index ]
   before_filter :assets_global
   before_filter :assets_index,  :only => [ :index ]
   before_filter :assets_edit,   :only => [ :edit, :update ]
@@ -69,6 +70,11 @@ class Admin::Shop::CustomersController < Admin::ResourceController
   def config_edit
     @parts << 'orders'
     @parts << 'addresses'
+  end
+
+  def config_index
+    @buttons << 'new'
+    @buttons << 'refresh'
   end
 
   def assets_global
