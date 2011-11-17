@@ -1,0 +1,5 @@
+- render_region :popups do |foot|
+  #popups
+    - @popups.each do |popup|
+      .popup{ :id => "#{popup}_popup"}
+        = render :partial => "admin/shop/customers/index/popups/#{popup}"
