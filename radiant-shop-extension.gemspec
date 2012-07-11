@@ -153,6 +153,7 @@ Gem::Specification.new do |s|
     "lib/radiant-shop-extension.rb",
     "lib/shop/controllers/application_controller.rb",
     "lib/shop/controllers/site_controller.rb",
+    "lib/shop/controllers/welcome_controller.rb",
     "lib/shop/interface/categories.rb",
     "lib/shop/interface/customers.rb",
     "lib/shop/interface/discounts.rb",
